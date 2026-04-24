@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hometown Romance Calendar</title>
+    <meta
+      name="description"
+      content="ปฏิทินออนแอร์รายเดือนของ Hometown Romance"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <p class="eyebrow">Monthly Calendar</p>
+        <h1>Hometown Romance</h1>
+        <p class="hero-copy">
+          ปฏิทินวันออนแอร์ของ <strong>Hometown Romance</strong>
+          แสดงแบบเดือนต่อเดือน พร้อม EP., เวลา และ platform ใน popup เมื่อกดดูรายละเอียด
+        </p>
+
+        <div class="hero-meta">
+          <article class="meta-card">
+            <span>ออนแอร์หลัก</span>
+            <strong>ทุกวันศุกร์ 22:30 น.</strong>
+          </article>
+          <article class="meta-card">
+            <span>UNCUT ไทย</span>
+            <strong>23:30 น. บน oneD</strong>
+          </article>
+          <article class="meta-card">
+            <span>Global</span>
+            <strong>iQIYI / iQ.com</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="calendar-panel">
+        <div class="panel-head">
+          <p class="eyebrow">Calendar View</p>
+          <p id="calendarNote" class="panel-note"></p>
+        </div>
+
+        <div class="calendar-toolbar">
+          <button id="prevMonthButton" class="nav-button icon-only" type="button" aria-label="Previous month">
+            ‹
+          </button>
+          <div class="month-stack">
+            <h2 id="calendarHeading">Calendar</h2>
+            <p id="monthLabel" class="month-label"></p>
+          </div>
+          <button id="nextMonthButton" class="nav-button icon-only" type="button" aria-label="Next month">
+            ›
+          </button>
+        </div>
+
+        <div class="calendar-scroll">
+          <div id="calendarRoot" class="calendar-month"></div>
+        </div>
+      </section>
+    </main>
+
+    <template id="calendarTemplate">
+      <section class="calendar-grid">
+        <div class="weekday">S</div>
+        <div class="weekday">M</div>
+        <div class="weekday">T</div>
+        <div class="weekday">W</div>
+        <div class="weekday">T</div>
+        <div class="weekday">F</div>
+        <div class="weekday">S</div>
+      </section>
+    </template>
+
+    <div id="detailModal" class="detail-modal" hidden aria-hidden="true">
+      <div id="detailBackdrop" class="detail-backdrop"></div>
+      <section
+        class="detail-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="detailTitle"
+      >
+        <button id="closeDetailButton" class="close-detail-button" type="button" aria-label="ปิด">
+          ×
+        </button>
+        <p id="detailEpisode" class="detail-episode"></p>
+        <h3 id="detailTitle" class="detail-title"></h3>
+        <p id="detailDate" class="detail-copy"></p>
+        <p id="detailTime" class="detail-copy"></p>
+        <p id="detailPlatform" class="detail-copy"></p>
+        <p id="detailStatus" class="detail-status"></p>
+      </section>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
