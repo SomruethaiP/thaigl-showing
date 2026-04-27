@@ -297,24 +297,44 @@ h2 {
 }
 
 .calendar-scroll {
-  overflow-x: auto;
-  padding-bottom: 0.25rem;
+  overflow-x: hidden;
 }
 
-.calendar-month {
+/* .calendar-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+} */
+
+/* .calendar-month {
   min-width: 760px;
+} */
+
+/* .calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.22rem;
+} */
+
+.calendar-month {
+  width: 100%;
+  min-width: 0;   /* 🔥 สำคัญมาก */
 }
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.22rem;
+  grid-template-columns: repeat(7, minmax(0, 1fr)); /* 🔥 บังคับ 7 ช่องเท่ากัน */
+  gap: 4px;
 }
 
 .weekday,
 .calendar-day {
   border-radius: 16px;
 }
+
+/* .calendar-day strong,
+.calendar-day span {
+  word-break: break-word;
+} */
 
 .weekday {
   padding: 0.4rem 0.2rem;
@@ -328,13 +348,21 @@ h2 {
 }
 
 .calendar-day {
-  min-height: 92px;
-  padding: 0.42rem;
+  width: 100%;
+  min-width: 0;
+
+  height: 80px; /* 👈 ปรับความสูงตรงนี้ได้เลย */
+
+  padding: 6px;
   background: rgba(248, 248, 252, 0.96);
   border: 1px solid var(--line);
+
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  justify-content: flex-start;
+  gap: 2px;
+
+  overflow: hidden; /* 👈 กันล้น */
 }
 
 .calendar-day.empty {
@@ -369,9 +397,16 @@ h2 {
 }
 
 .episode-title {
-  font-size: 0.62rem;
-  line-height: 1.15;
+  font-size: 0.65rem;
+  line-height: 1.2;
   font-weight: 700;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;      /* 👈 จำกัด 2 บรรทัด */
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+  text-overflow: ellipsis;    /* 👈 ใส่ ... */
 }
 
 .calendar-day.has-episode::after {
@@ -478,84 +513,35 @@ h2 {
 }
 
 @media (max-width: 640px) {
-  .page-shell {
-    width: calc(100% - 0.75rem);
-  }
-
-  .hero,
-  .calendar-panel {
-    border-radius: 22px;
-  }
-
-  .hero {
-    padding: 1rem;
-  }
-
-  .calendar-panel {
-    padding: 1rem;
-  }
-
-  .panel-head {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-
-  .calendar-toolbar {
-    gap: 0.45rem;
-  }
-
-  .month-stack {
-    gap: 0.05rem;
-  }
-
-  .calendar-month {
-    min-width: 620px;
-  }
 
   .calendar-grid {
-    gap: 0.18rem;
-  }
-
-  .weekday {
-    padding: 0.28rem 0.08rem;
-    font-size: 0.56rem;
+    gap: 2px;
   }
 
   .calendar-day {
-    min-height: 76px;
-    padding: 0.32rem;
-    gap: 0.1rem;
-    border-radius: 12px;
+    aspect-ratio: 1 / 1;   /* 👈 ทำให้เป็นสี่เหลี่ยม */
+    min-height: unset;     /* 👈 เอาความสูง fix ออก */
+    padding: 4px;
+  }
+
+  .calendar-day {
+    border-radius: 14px;
+    transition: all 0.15s ease;
+  }
+  
+  .calendar-day:hover {
+    transform: translateY(-2px);
   }
 
   .day-number {
-    font-size: 0.82rem;
-  }
-
-  .episode-tag {
-    font-size: 0.48rem;
-    padding: 0.08rem 0.28rem;
+    font-size: 11px;
   }
 
   .episode-title {
-    font-size: 0.54rem;
+    font-size: 9px;
   }
 
-  .icon-only {
-    width: 38px;
-    height: 38px;
-    font-size: 1.4rem;
-  }
-
-  .detail-sheet {
-    bottom: 0.5rem;
-    width: calc(100% - 0.75rem);
-    border-radius: 20px;
-    padding: 0.9rem;
-  }
-
-  .detail-title {
-    font-size: 1.3rem;
+  .episode-tag {
+    font-size: 8px;
   }
 }

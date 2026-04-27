@@ -10,9 +10,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
-  authDomain: "thaigl-showing.firebaseapp.com",
-  projectId: "thaigl-showing",
+    apiKey: "AIzaSyBJpNvlY_hIX5OzGEfDNDYw-kgrjrrGFg0",
+    authDomain: "thaigl-showing.firebaseapp.com",
+    projectId: "thaigl-showing",
+    storageBucket: "thaigl-showing.firebasestorage.app",
+    messagingSenderId: "115777994879",
+    appId: "1:115777994879:web:7736a44ebf343095923f4a",
+    measurementId: "G-HSB0BJQWQR"
 };
 
 const app = initializeApp(firebaseConfig);

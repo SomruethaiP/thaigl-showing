@@ -4,7 +4,6 @@ import {
   collection,
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
 const today = new Date();
 const todayDay = today.getDate();
 const todayMonth = today.getMonth();
