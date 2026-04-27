@@ -1,78 +1,98 @@
-const calendarMonths = [
-  {
-    year: 2026,
-    monthIndex: 3,
-    label: "April 2026",
-    note: "เริ่มตอนแรกวันศุกร์ที่ 3 เมษายน 2026",
-    episodes: {
-      3: {
-        episode: "EP.1",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ตอนแรก",
-      },
-      10: {
-        episode: "EP.2",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ออนแอร์แล้ว",
-      },
-      17: {
-        episode: "EP.3",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ออนแอร์แล้ว",
-      },
-      24: {
-        episode: "EP.4",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ตามรอบประจำสัปดาห์",
-      },
-    },
-  },
-  {
-    year: 2026,
-    monthIndex: 4,
-    label: "May 2026",
-    note: "ตอนท้ายของซีซันจนถึงตอนจบ",
-    episodes: {
-      1: {
-        episode: "EP.5",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ตามรอบประจำสัปดาห์",
-      },
-      8: {
-        episode: "EP.6",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ตามรอบประจำสัปดาห์",
-      },
-      15: {
-        episode: "EP.7",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ก่อนตอนจบ",
-      },
-      22: {
-        episode: "EP.8",
-        title: "Hometown Romance",
-        time: "22:30 / 23:30",
-        platform: "One31 • oneD • iQIYI",
-        status: "ตอนจบ",
-      },
-    },
-  },
-];
+// const calendarMonths = [
+//   {
+//     year: 2026,
+//     monthIndex: 3,
+//     label: "April 2026",
+//     note: "เริ่มตอนแรกวันศุกร์ที่ 3 เมษายน 2026",
+//     episodes: {
+//       3: {
+//         episode: "EP.1",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ตอนแรก",
+//       },
+//       10: {
+//         episode: "EP.2",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ออนแอร์แล้ว",
+//       },
+//       17: {
+//         episode: "EP.3",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ออนแอร์แล้ว",
+//       },
+//       24: {
+//         episode: "EP.4",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ตามรอบประจำสัปดาห์",
+//       },
+//     },
+//   },
+//   {
+//     year: 2026,
+//     monthIndex: 4,
+//     label: "May 2026",
+//     note: "ตอนท้ายของซีซันจนถึงตอนจบ",
+//     episodes: {
+//       1: {
+//         episode: "EP.5",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ตามรอบประจำสัปดาห์",
+//       },
+//       8: {
+//         episode: "EP.6",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ตามรอบประจำสัปดาห์",
+//       },
+//       15: {
+//         episode: "EP.7",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ก่อนตอนจบ",
+//       },
+//       22: {
+//         episode: "EP.8",
+//         title: "Hometown Romance",
+//         time: "22:30 / 23:30",
+//         platform: "One31 • oneD • iQIYI",
+//         status: "ตอนจบ",
+//       },
+//     },
+//   },
+// ];
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBJpNvlY_hIX5OzGEfDNDYw-kgrjrrGFg0",
+  authDomain: "thaigl-showing.firebaseapp.com",
+  projectId: "thaigl-showing",
+  storageBucket: "thaigl-showing.firebasestorage.app",
+  messagingSenderId: "115777994879",
+  appId: "1:115777994879:web:7736a44ebf343095923f4a",
+  measurementId: "G-HSB0BJQWQR"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const state = { currentMonth: 0 };
 
