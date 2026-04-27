@@ -2,30 +2,139 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import {
   getFirestore,
   collection,
-  addDoc
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
+  apiKey: "AIzaSy...",
+  authDomain: "thaigl-showing.firebaseapp.com",
+  projectId: "thaigl-showing",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.addEpisode = async function () {
+// 👉 cache input (สำคัญมาก กัน bug)
+const inputs = {
+  title: document.getElementById("title"),
+  startDate: document.getElementById("startDate"),
+  totalEpisodes: document.getElementById("totalEpisodes"),
+  time: document.getElementById("time"),
+  platform: document.getElementById("platform"),
+  status: document.getElementById("status"),
+};
+
+let editId = null;
+
+// ---------- SAVE ----------
+window.saveSeries = async function () {
   const data = {
-    day: Number(document.getElementById("day").value),
-    monthIndex: Number(document.getElementById("month").value),
-    year: Number(document.getElementById("year").value),
-    episode: document.getElementById("episode").value,
-    title: document.getElementById("title").value,
-    time: document.getElementById("time").value,
-    platform: document.getElementById("platform").value,
-    status: document.getElementById("status").value,
+    title: inputs.title.value,
+    startDate: inputs.startDate.value,
+    totalEpisodes: Number(inputs.totalEpisodes.value),
+    time: inputs.time.value,
+    platform: inputs.platform.value,
+    status: inputs.status.value || "",
+    poster: posterUrl.value || ""   // 👈 เพิ่มตรงนี้
+
   };
 
-  await addDoc(collection(db, "episodes"), data);
-  alert("Saved!");
+  try {
+    if (editId) {
+      await updateDoc(doc(db, "thaigl", editId), data);
+      editId = null;
+    } else {
+      await addDoc(collection(db, "thaigl"), data);
+    }
+
+    clearForm();
+    loadList();
+  } catch (err) {
+    console.error(err);
+    alert("Error saving data");
+  }
 };
+
+// ---------- RENDER LIST (ใหม่) ----------
+function renderList(snapshot) {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  snapshot.forEach(d => {
+    const data = d.data();
+
+    const div = document.createElement("div");
+    div.className = "series-item";
+
+    div.innerHTML = `
+      <div class="series-title">${data.title}</div>
+      <div>${data.startDate || "-"} • ${data.time || "-"}</div>
+      <div>EP: ${data.totalEpisodes}</div>
+
+      <div class="actions">
+        <button class="edit-btn" data-id="${d.id}">Edit</button>
+        <button class="delete-btn" data-id="${d.id}">Delete</button>
+      </div>
+    `;
+
+    // 👉 ใช้ addEventListener แทน onclick (clean กว่า)
+    div.querySelector(".edit-btn").addEventListener("click", () => editSeries(d.id));
+    div.querySelector(".delete-btn").addEventListener("click", () => deleteSeries(d.id));
+
+    list.appendChild(div);
+  });
+}
+
+// ---------- LOAD ----------
+async function loadList() {
+  const snapshot = await getDocs(collection(db, "thaigl"));
+  renderList(snapshot);
+}
+
+// ---------- DELETE ----------
+async function deleteSeries(id) {
+  if (!confirm("Delete this series?")) return;
+
+  try {
+    await deleteDoc(doc(db, "thaigl", id));
+    loadList();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// ---------- EDIT ----------
+async function editSeries(id) {
+  const snapshot = await getDocs(collection(db, "thaigl"));
+
+  snapshot.forEach(d => {
+    if (d.id === id) {
+      const data = d.data();
+
+      inputs.title.value = data.title || "";
+      inputs.startDate.value = data.startDate || "";
+      inputs.totalEpisodes.value = data.totalEpisodes || "";
+      inputs.time.value = data.time || "";
+      inputs.platform.value = data.platform || "";
+      inputs.status.value = data.status || "";
+
+
+      editId = id;
+
+      // 👉 scroll ไปบน (UX ดีขึ้น)
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+}
+
+// ---------- CLEAR ----------
+function clearForm() {
+  Object.values(inputs).forEach(input => input.value = "");
+}
+
+// INIT
+loadList();

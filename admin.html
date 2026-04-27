@@ -1,21 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-  <title>Admin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Hometown Romance</title>
+
+  <!-- FONT เหมือนหน้า index -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./admin.css">
 </head>
+
 <body>
-  <h2>Add Episode</h2>
+  <main class="page-shell">
 
-  <input id="day" placeholder="Day (1-31)">
-  <input id="month" placeholder="MonthIndex (0-11)">
-  <input id="year" placeholder="Year">
-  <input id="episode" placeholder="EP.1">
-  <input id="title" placeholder="Title">
-  <input id="time" placeholder="Time">
-  <input id="platform" placeholder="Platform">
-  <input id="status" placeholder="Status">
+    <!-- HEADER -->
+    <section class="hero">
+      <p class="eyebrow">Admin Panel</p>
+      <h1>Manage Series</h1>
+      <p class="hero-copy">
+        เพิ่ม แก้ไข และจัดการข้อมูลซีรี่ย์ สำหรับ calendar
+      </p>
+    </section>
 
-  <button onclick="addEpisode()">Save</button>
+    <!-- FORM -->
+    <section class="calendar-panel">
+      <h2>Add / Edit Series</h2>
+
+      <div class="form-grid">
+        <input id="title" placeholder="Title">
+        <input id="startDate" type="date">
+        <input id="totalEpisodes" placeholder="Total Episodes">
+        <input id="time" type="time">
+        <input id="platform" placeholder="Platform">
+        <input id="status" placeholder="Status (optional)">
+        <input id="posterUrl" placeholder="Poster Image URL">
+      </div>
+
+      <button class="primary-btn" onclick="saveSeries()">Save</button>
+    </section>
+
+    <!-- LIST -->
+    <section class="calendar-panel">
+      <h2>Series List</h2>
+      <div id="list" class="series-list"></div>
+    </section>
+
+  </main>
 
   <script type="module" src="./admin.js"></script>
 </body>

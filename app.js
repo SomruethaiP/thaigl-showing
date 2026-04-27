@@ -1,85 +1,15 @@
-// const calendarMonths = [
-//   {
-//     year: 2026,
-//     monthIndex: 3,
-//     label: "April 2026",
-//     note: "เริ่มตอนแรกวันศุกร์ที่ 3 เมษายน 2026",
-//     episodes: {
-//       3: {
-//         episode: "EP.1",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ตอนแรก",
-//       },
-//       10: {
-//         episode: "EP.2",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ออนแอร์แล้ว",
-//       },
-//       17: {
-//         episode: "EP.3",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ออนแอร์แล้ว",
-//       },
-//       24: {
-//         episode: "EP.4",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ตามรอบประจำสัปดาห์",
-//       },
-//     },
-//   },
-//   {
-//     year: 2026,
-//     monthIndex: 4,
-//     label: "May 2026",
-//     note: "ตอนท้ายของซีซันจนถึงตอนจบ",
-//     episodes: {
-//       1: {
-//         episode: "EP.5",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ตามรอบประจำสัปดาห์",
-//       },
-//       8: {
-//         episode: "EP.6",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ตามรอบประจำสัปดาห์",
-//       },
-//       15: {
-//         episode: "EP.7",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ก่อนตอนจบ",
-//       },
-//       22: {
-//         episode: "EP.8",
-//         title: "Hometown Romance",
-//         time: "22:30 / 23:30",
-//         platform: "One31 • oneD • iQIYI",
-//         status: "ตอนจบ",
-//       },
-//     },
-//   },
-// ];
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const today = new Date();
+const todayDay = today.getDate();
+const todayMonth = today.getMonth();
+const todayYear = today.getFullYear();
+
 const firebaseConfig = {
   apiKey: "AIzaSyBJpNvlY_hIX5OzGEfDNDYw-kgrjrrGFg0",
   authDomain: "thaigl-showing.firebaseapp.com",
@@ -90,10 +20,11 @@ const firebaseConfig = {
   measurementId: "G-HSB0BJQWQR"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const db = getFirestore(app);
+
+let calendarMonths = [];
+const monthLabels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const state = { currentMonth: 0 };
 
 const nodes = {
@@ -107,69 +38,72 @@ const nodes = {
   modal: document.querySelector("#detailModal"),
   backdrop: document.querySelector("#detailBackdrop"),
   closeButton: document.querySelector("#closeDetailButton"),
-  episode: document.querySelector("#detailEpisode"),
   title: document.querySelector("#detailTitle"),
   date: document.querySelector("#detailDate"),
-  time: document.querySelector("#detailTime"),
-  platform: document.querySelector("#detailPlatform"),
-  status: document.querySelector("#detailStatus"),
 };
 
 let longPressTimer = null;
 let suppressClick = false;
-let closeTimer = null;
 
+// ---------- MODAL ----------
 function openDetailModal(detail) {
-  if (closeTimer) {
-    window.clearTimeout(closeTimer);
-    closeTimer = null;
-  }
+  const list = detail.list || [detail];
 
-  nodes.episode.textContent = detail.episode;
-  nodes.title.textContent = detail.title;
-  nodes.date.textContent = `วันออนแอร์ ${String(detail.day).padStart(2, "0")} ${
-    monthLabels[detail.monthIndex]
-  } ${detail.year}`;
-  nodes.time.textContent = `เวลา ${detail.time}`;
-  nodes.platform.textContent = `รับชม ${detail.platform}`;
-  nodes.status.textContent = detail.status;
-  nodes.modal.hidden = false;
-  nodes.modal.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-  window.requestAnimationFrame(() => {
-    nodes.modal.classList.add("is-open");
+  nodes.title.innerHTML = "";
+
+  list.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "multi-item";
+
+    div.innerHTML = `
+  <div class="popup-row">
+
+    <div class="popup-text">
+      <strong class="popup-title">${item.episode} - ${item.title}</strong>
+      <p>เวลา ${item.time || "-"}</p>
+      <p>${item.platform || ""}</p>
+      <p class="popup-status">${item.status || ""}</p>
+    </div>
+
+    ${item.poster ? `
+      <div class="popup-image">
+        <img src="${item.poster}" />
+      </div>
+    ` : ""}
+
+  </div>
+`;
+
+    nodes.title.appendChild(div);
   });
+
+  nodes.date.textContent = `วันออนแอร์ ${String(detail.day).padStart(2,"0")} ${monthLabels[detail.monthIndex]} ${detail.year}`;
+
+  nodes.modal.hidden = false;
+  nodes.modal.classList.add("is-open");
 }
 
 function closeDetailModal() {
   nodes.modal.classList.remove("is-open");
-  nodes.modal.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-  closeTimer = window.setTimeout(() => {
-    nodes.modal.hidden = true;
-    closeTimer = null;
-  }, 280);
+  setTimeout(() => nodes.modal.hidden = true, 200);
 }
 
 function attachLongPress(cell, detail) {
-  const startPress = () => {
-    longPressTimer = window.setTimeout(() => {
+  const start = () => {
+    longPressTimer = setTimeout(() => {
       openDetailModal(detail);
       suppressClick = true;
-    }, 350);
+    }, 300);
   };
 
-  const cancelPress = () => {
-    if (longPressTimer) {
-      window.clearTimeout(longPressTimer);
-      longPressTimer = null;
-    }
+  const cancel = () => {
+    clearTimeout(longPressTimer);
   };
 
-  cell.addEventListener("pointerdown", startPress);
-  cell.addEventListener("pointerup", cancelPress);
-  cell.addEventListener("pointerleave", cancelPress);
-  cell.addEventListener("pointercancel", cancelPress);
+  cell.addEventListener("pointerdown", start);
+  cell.addEventListener("pointerup", cancel);
+  cell.addEventListener("pointerleave", cancel);
+
   cell.addEventListener("click", () => {
     if (suppressClick) {
       suppressClick = false;
@@ -179,79 +113,172 @@ function attachLongPress(cell, detail) {
   });
 }
 
+// ---------- TIME SORT ----------
+function parseTime(timeStr) {
+  if (!timeStr) return 9999;
+  const t = timeStr.split("/")[0].trim();
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+// ---------- RENDER ----------
 function renderCalendar() {
   const current = calendarMonths[state.currentMonth];
+  if (!current) return;
+
   nodes.calendarRoot.innerHTML = "";
 
   const calendar = nodes.calendarTemplate.content.firstElementChild.cloneNode(true);
+
   const firstDay = new Date(current.year, current.monthIndex, 1).getDay();
   const daysInMonth = new Date(current.year, current.monthIndex + 1, 0).getDate();
 
-  for (let i = 0; i < firstDay; i += 1) {
-    const emptyCell = document.createElement("article");
-    emptyCell.className = "calendar-day empty";
-    calendar.append(emptyCell);
+  for (let i = 0; i < firstDay; i++) {
+    const empty = document.createElement("article");
+    empty.className = "calendar-day empty";
+    calendar.append(empty);
   }
 
-  for (let day = 1; day <= daysInMonth; day += 1) {
+  for (let day = 1; day <= daysInMonth; day++) {
     const cell = document.createElement("article");
-    const episode = current.episodes[day];
-    cell.className = `calendar-day ${episode ? "has-episode" : ""}`.trim();
-
+  
+    const dayEpisodes = current.episodes[day];
+  
+    // ⭐ เช็ค today
+    const isToday =
+      day === todayDay &&
+      current.monthIndex === todayMonth &&
+      current.year === todayYear;
+  
+    // ✅ รวม class ทีเดียว (แก้ปัญหา overwrite)
+    cell.className = `
+      calendar-day
+      ${dayEpisodes ? "has-episode" : ""}
+      ${isToday ? "today" : ""}
+    `.trim();
+  
     const number = document.createElement("strong");
-    number.className = "day-number";
     number.textContent = String(day).padStart(2, "0");
+    number.className = "day-number";
     cell.append(number);
-
-    if (episode) {
+  
+    if (dayEpisodes && dayEpisodes.length > 0) {
+      const first = dayEpisodes[0];
+  
       const title = document.createElement("strong");
       title.className = "episode-title";
-      title.textContent = episode.title;
-
+      title.textContent = first.title;
+  
       const tag = document.createElement("span");
       tag.className = "episode-tag";
-      tag.textContent = episode.episode;
-
+      tag.textContent = first.episode;
+  
       cell.append(title, tag);
+  
+      if (dayEpisodes.length > 1) {
+        const more = document.createElement("span");
+        more.className = "episode-more";
+        more.textContent = `+${dayEpisodes.length - 1}`;
+        cell.append(more);
+      }
+  
       attachLongPress(cell, {
-        ...episode,
+        list: dayEpisodes,
         day,
         monthIndex: current.monthIndex,
-        year: current.year,
+        year: current.year
       });
     }
-
+  
     calendar.append(cell);
   }
 
   nodes.calendarRoot.append(calendar);
   nodes.monthLabel.textContent = current.label;
   nodes.calendarHeading.textContent = current.label;
-  nodes.calendarNote.textContent = current.note;
-  nodes.prevMonthButton.disabled = state.currentMonth === 0;
-  nodes.nextMonthButton.disabled = state.currentMonth === calendarMonths.length - 1;
 }
 
-nodes.prevMonthButton.addEventListener("click", () => {
+// ---------- LOAD DATA ----------
+async function loadData() {
+  const snapshot = await getDocs(collection(db, "thaigl"));
+  const map = {};
+
+  snapshot.forEach(doc => {
+    const serie = doc.data();
+    const start = new Date(serie.startDate);
+
+    for (let i = 0; i < serie.totalEpisodes; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i * 7);
+
+      const ep = {
+        episode: `EP.${i + 1}`,
+        day: d.getDate(),
+        monthIndex: d.getMonth(),
+        year: d.getFullYear(),
+        title: serie.title,
+        platform: serie.platform,
+        status: serie.status || "",
+        time: serie.time || "",
+        poster: serie.poster || ""   // 👈 เพิ่มตรงนี้
+      };
+
+      const key = `${ep.year}-${ep.monthIndex}`;
+
+      if (!map[key]) {
+        map[key] = {
+          year: ep.year,
+          monthIndex: ep.monthIndex,
+          label: `${monthLabels[ep.monthIndex]} ${ep.year}`,
+          episodes: {}
+        };
+      }
+
+      if (!map[key].episodes[ep.day]) {
+        map[key].episodes[ep.day] = [];
+      }
+
+      map[key].episodes[ep.day].push(ep);
+    }
+  });
+
+  // ✅ SORT เวลา
+  Object.values(map).forEach(month => {
+    Object.values(month.episodes).forEach(dayArr => {
+      dayArr.sort((a, b) => parseTime(a.time) - parseTime(b.time));
+    });
+  });
+
+  calendarMonths = Object.values(map).sort((a, b) =>
+    a.year === b.year ? a.monthIndex - b.monthIndex : a.year - b.year
+  );
+  
+  // 👉 หา index เดือนปัจจุบัน
+  const currentIndex = calendarMonths.findIndex(
+    m => m.year === todayYear && m.monthIndex === todayMonth
+  );
+  
+  state.currentMonth = currentIndex !== -1 ? currentIndex : 0;
+  
+  renderCalendar();
+}
+
+// ---------- EVENTS ----------
+nodes.prevMonthButton.onclick = () => {
   if (state.currentMonth > 0) {
-    state.currentMonth -= 1;
+    state.currentMonth--;
     renderCalendar();
   }
-});
+};
 
-nodes.nextMonthButton.addEventListener("click", () => {
+nodes.nextMonthButton.onclick = () => {
   if (state.currentMonth < calendarMonths.length - 1) {
-    state.currentMonth += 1;
+    state.currentMonth++;
     renderCalendar();
   }
-});
+};
 
-nodes.backdrop.addEventListener("click", closeDetailModal);
-nodes.closeButton.addEventListener("click", closeDetailModal);
-window.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !nodes.modal.hidden) {
-    closeDetailModal();
-  }
-});
+nodes.backdrop.onclick = closeDetailModal;
+nodes.closeButton.onclick = closeDetailModal;
 
-renderCalendar();
+loadData();

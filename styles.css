@@ -24,6 +24,133 @@ body {
     linear-gradient(180deg, #fafafe 0%, #ececf3 100%);
 }
 
+/* ตัว modal ทั้งหมด */
+.detail-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* backdrop */
+.detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+/* กล่อง content */
+.detail-sheet {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+
+  max-height: 80vh;       /* ✅ สำคัญ */
+  overflow-y: auto;       /* ✅ scroll ได้ */
+
+  padding: 20px;
+}
+
+.detail-sheet {
+  scroll-behavior: smooth;
+}
+
+.calendar-day.today {
+  position: relative;
+  border: 1px solid #ff4d6d;
+  border-radius: 12px;
+  background: rgba(255, 77, 110, 0.208);
+}
+
+.calendar-day.today .day-number {
+  background: var(--accent);
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+}
+
+/* dot แบบ iOS */
+.calendar-day.today::after {
+  content: "";
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  background: #ff4d6d;
+  border-radius: 50%;
+}
+
+/* layout หลัก */
+.popup-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+/* ฝั่ง text */
+.popup-text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* title */
+.popup-title {
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* status */
+.popup-status {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* ฝั่งรูป */
+.popup-image {
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.popup-image img {
+  width: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.popup-img {
+  width: 100%;
+  max-width: 220px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.episode-more {
+  display: block;
+  font-size: 12px;
+  color: #999;
+}
+
+.multi-item {
+  margin-bottom: 10px;
+}
+
 .page-shell {
   width: min(1080px, calc(100% - 1rem));
   margin: 0 auto;
