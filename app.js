@@ -164,22 +164,31 @@ function renderCalendar() {
     if (dayEpisodes && dayEpisodes.length > 0) {
       const first = dayEpisodes[0];
   
-      const title = document.createElement("strong");
-      title.className = "episode-title";
-      title.textContent = first.title;
-  
-      const tag = document.createElement("span");
-      tag.className = "episode-tag";
-      tag.textContent = first.episode;
-  
-      cell.append(title, tag);
-  
-      if (dayEpisodes.length > 1) {
-        const more = document.createElement("span");
-        more.className = "episode-more";
-        more.textContent = `+${dayEpisodes.length - 1}`;
-        cell.append(more);
-      }
+      // 👉 group tag + more
+const metaRow = document.createElement("div");
+metaRow.className = "episode-meta";
+
+const tag = document.createElement("span");
+tag.className = "episode-tag";
+tag.textContent = first.episode;
+
+metaRow.append(tag);
+
+// +X
+if (dayEpisodes.length > 1) {
+  const more = document.createElement("span");
+  more.className = "episode-more";
+  more.textContent = `+${dayEpisodes.length - 1}`;
+  metaRow.append(more);
+}
+
+// title
+const title = document.createElement("strong");
+title.className = "episode-title";
+title.textContent = first.title;
+
+// append
+cell.append(metaRow, title);
   
       attachLongPress(cell, {
         list: dayEpisodes,

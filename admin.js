@@ -30,6 +30,7 @@ const inputs = {
   time: document.getElementById("time"),
   platform: document.getElementById("platform"),
   status: document.getElementById("status"),
+  poster: document.getElementById("poster")
 };
 
 let editId = null;
@@ -43,7 +44,7 @@ window.saveSeries = async function () {
     time: inputs.time.value,
     platform: inputs.platform.value,
     status: inputs.status.value || "",
-    poster: posterUrl.value || ""   // 👈 เพิ่มตรงนี้
+    poster: inputs.poster.value || ""   // 👈 เพิ่มตรงนี้
 
   };
 
@@ -125,6 +126,8 @@ async function editSeries(id) {
       inputs.time.value = data.time || "";
       inputs.platform.value = data.platform || "";
       inputs.status.value = data.status || "";
+      inputs.poster.value = data.poster || "";
+      
 
 
       editId = id;
